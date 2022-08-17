@@ -276,6 +276,9 @@ class GoCart {
                 callback(cart);
             }
         }
+        //Dispatch an event
+        var evt = new CustomEvent("CartUpdateEvent", {detail: cart});
+        window.dispatchEvent(evt);
     }
 
     addItemToCartHandler(product) {
@@ -313,6 +316,14 @@ class GoCart {
             if (itemVariant === null) {
                 itemVariant = '';
             }
+            //console.log(item);
+            let itemProperties = '';
+            if (item.properties !== null) {
+                for (const property in item.properties) {
+                    //console.log(`${property}: ${item.properties[property]}`);
+                    itemProperties += `${property}: ${item.properties[property]}<br />`;
+                }
+            }
             const cartSingleProduct = `
         <div class="go-cart-item__single" data-line="${Number(index + 1)}">
             <div class="go-cart-item__info-wrapper">
@@ -320,6 +331,7 @@ class GoCart {
                 <div class="go-cart-item__info">
                     <a href="${item.url}" class="go-cart-item__title">${item.product_title}</a>
                     <div class="go-cart-item__variant">${itemVariant}</div>
+                    <div class="go-cart-item__properties">${itemProperties}</div>
                     <div class="go-cart-item__quantity">
                         <span class="go-cart-item__quantity-label">${this.labelQuantity} </span>
                         <span class="go-cart-item__quantity-button js-go-cart-quantity-minus">-</span>
