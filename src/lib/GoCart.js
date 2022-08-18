@@ -40,6 +40,7 @@ class GoCart {
             labelCartIsEmpty: 'Your Cart is currently empty!',
             labelQuantity: 'Quantity:',
             labelRemove: 'Remove',
+            appliedDiscount: 0
         };
 
         this.defaults = Object.assign({}, defaults, options);
@@ -75,6 +76,7 @@ class GoCart {
         this.labelCartIsEmpty = this.defaults.labelCartIsEmpty;
         this.labelQuantity = this.defaults.labelQuantity;
         this.labelRemove = this.defaults.labelRemove;
+        this.appliedDiscount = this.defaults.appliedDiscount;
 
         this.init();
 
@@ -188,7 +190,13 @@ class GoCart {
             body: JSON.stringify(formData),
         })
             .then((response) => response.json())
-            .then((product) => this.addItemToCartHandler(product))
+            .then((product) => {
+                console.log('product details: %o', product)
+                if(this.appliedDiscount) {
+                    product.final_line_price *= this.appliedDiscount;
+                }
+                this.addItemToCartHandler(product)
+            })
             .catch((error) => {
                 this.ajaxRequestFail();
                 throw new Error(error);
